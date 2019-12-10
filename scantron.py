@@ -4,10 +4,9 @@ MAX_SCORE = 100
 
 
 class Student:
-    def __init__(self, line):
-        l = line.split(" ")
-        self.__id = l[0]
-        self.__respond = l[1:]
+    def __init__(self, sid, respond):
+        self.__id = sid
+        self.__respond = respond
 
     def calc_score(self, answer):
         unit = MAX_SCORE / len(answer)
@@ -59,6 +58,13 @@ class Students:
         print("Class Average = {}".format(int(total / num)))
 
 
+def get_response(line, data_type=None):
+    result = line.strip().split(" ")
+    if data_type is None:
+        return result[0], result[1:]
+
+    return result
+
 if __name__ == "__main__":
     students = Students()
 
@@ -68,10 +74,11 @@ if __name__ == "__main__":
         try:
             with path.open(encoding="utf-8") as f:
                 size = int(f.readline())
-                answer = [x for x in f.readline().strip().split(" ")]
+                answer = get_response(f.readline(), "answer")
 
                 for line in f:
-                    student = Student(line.strip())
+                    sid, respond = get_response(line)
+                    student = Student(sid, respond)
                     student.calc_score(answer)
                     students.add_student(student)
 
